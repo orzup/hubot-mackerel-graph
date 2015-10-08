@@ -1,22 +1,15 @@
 # Description
-#   A hubot script that does the things
-#
-# Configuration:
-#   LIST_OF_ENV_VARS_TO_SET
+#   mackerelのURLをいろいろ返してくれるbot
 #
 # Commands:
-#   hubot hello - <what the respond trigger does>
-#   orly - <what the hear trigger does>
-#
-# Notes:
-#   <optional notes required for the script>
+#   hubot mackerel - ダッシュボードのURLを返す
 #
 # Author:
 #   Asami Nakano <nakano.a@pepabo.com>
 
 module.exports = (robot) ->
-  robot.respond /hello/, (res) ->
-    res.reply "hello!"
+  robot.respond /mackerel$/i, (res) ->
+    res.send "https://mackerel.io/orgs/pepabo/dashboard"
 
-  robot.hear /orly/, ->
-    res.send "yarly"
+  robot.respond /mackerel (\w+)$/i, (res) ->
+    res.send res.match[1]
