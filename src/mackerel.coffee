@@ -52,7 +52,7 @@ graphURLFormat = (service, role, graph) ->
   return "#{HOST}/embed/orgs/pepabo/services/#{service}/#{role}.png?graph=#{graph}"
 
 module.exports = (robot) ->
-  robot.respond /(mackerel|mkr)$/i, (res) ->
+  robot.respond /(?:mackerel|mkr)$/i, (res) ->
     unless checkToken(res)
       return
 
@@ -61,14 +61,14 @@ module.exports = (robot) ->
       .get() handleResponse res, (response) ->
         res.send textFormat(response, 'services')
 
-  robot.respond /(mackerel|mkr) (\w+)$/i, (res) ->
+  robot.respond /(?:mackerel|mkr) (\S+)$/i, (res) ->
     unless checkToken(res)
       return
 
-    res.http("#{HOST}/api/v0/services/#{res.match[2]}/roles")
+    res.http("#{HOST}/api/v0/services/#{res.match[1]}/roles")
       .headers("X-Api-Key": process.env.HUBOT_MACKEREL_API_KEY)
       .get() handleResponse res, (response) ->
         res.send textFormat(response, 'roles')
 
-  robot.respond /(mackerel|mkr) (.+) (.+) (.+)$/i, (res) ->
-    res.send graphURLFormat(res.match[2], res.match[3], res.match[4])
+  robot.respond /(?:mackerel|mkr) (\S+) (\S+)(?: (\S+))?$/i, (res) ->
+    res.send graphURLFormat(res.match[1], res.match[2], res.match[3])
