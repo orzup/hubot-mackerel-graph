@@ -8,6 +8,7 @@
 #
 # Author:
 #   Asami Nakano <nakano.a@pepabo.com>
+HOST = "https://mackerel.io"
 
 checkToken = (msg) ->
   unless process.env.HUBOT_MACKEREL_API_KEY?
@@ -50,7 +51,7 @@ module.exports = (robot) ->
     unless checkToken(res)
       return
 
-    res.http("https://mackerel.io/api/v0/services")
+    res.http("#{HOST}/api/v0/services")
       .headers("X-Api-Key": process.env.HUBOT_MACKEREL_API_KEY)
       .get() handleResponse res, (response) ->
         res.send textFormat(response, 'services')
@@ -59,7 +60,10 @@ module.exports = (robot) ->
     unless checkToken(res)
       return
 
-    res.http("https://mackerel.io/api/v0/services/#{res.match[2]}/roles")
+    res.http("#{HOST}/api/v0/services/#{res.match[2]}/roles")
       .headers("X-Api-Key": process.env.HUBOT_MACKEREL_API_KEY)
       .get() handleResponse res, (response) ->
         res.send textFormat(response, 'roles')
+
+  robot.respond /(mackerel|mkr) (\w+) (\w+) (.+)$/i, (res) ->
+    res.send "#{HOST}/embed/orgs/pepabo/services/#{res.match[2]}/#{res.match[3]}.png?graph=#{res.match[4]}"
