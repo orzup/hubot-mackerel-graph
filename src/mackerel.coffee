@@ -4,6 +4,7 @@
 # Commands:
 #   mackerel - サービス一覧を返す
 #   mkr - サービス一覧を返す
+#   mkr service - サービスのロール一覧を返す
 #
 # Author:
 #   Asami Nakano <nakano.a@pepabo.com>
@@ -48,5 +49,22 @@ module.exports = (robot) ->
           for service, i in response['services']
             text += "- " + service['name']
             if i < response['services'].length - 1
+              text += "\n"
+          res.send text
+
+  robot.respond /(mackerel|mkr) (\w+)$/i, (res) ->
+    unless checkToken(res)
+      return
+
+    res.http("https://mackerel.io/api/v0/services/#{res.match[2]}/roles")
+      .headers("X-Api-Key": process.env.HUBOT_MACKEREL_API_KEY)
+      .get() handleResponse res, (response) ->
+        if response.length == 0
+          res.send "Failed to get mackerel api response: resnponse is empty"
+        else
+          text = ""
+          for role, i in response['roles']
+            text += "- " + role['name']
+            if i < response['roles'].length - 1
               text += "\n"
           res.send text
