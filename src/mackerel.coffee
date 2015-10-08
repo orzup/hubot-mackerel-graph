@@ -5,6 +5,8 @@
 #   mackerel - サービス一覧を返す
 #   mkr - サービス一覧を返す
 #   mkr service - サービスのロール一覧を返す
+#   mkr service role - ロールのloadavg5へのURLを返す
+#   mkr service role graph - ロールのグラフ画像へのURLを返す
 #
 # Author:
 #   Asami Nakano <nakano.a@pepabo.com>
