@@ -49,6 +49,8 @@ textFormat = (data, select) ->
     return text
 
 graphURLFormat = (service, role, graph) ->
+  if graph == undefined
+    graph = "loadavg5"
   return "#{HOST}/embed/orgs/pepabo/services/#{service}/#{role}.png?graph=#{graph}"
 
 module.exports = (robot) ->
