@@ -65,5 +65,5 @@ module.exports = (robot) ->
       .get() handleResponse res, (response) ->
         res.send textFormat(response, 'roles')
 
-  robot.respond /(mackerel|mkr) (\w+) (\w+) (.+)$/i, (res) ->
+  robot.respond /(mackerel|mkr) (.+) (.+) (.+)$/i, (res) ->
     res.send "#{HOST}/embed/orgs/pepabo/services/#{res.match[2]}/#{res.match[3]}.png?graph=#{res.match[4]}"
