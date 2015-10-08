@@ -46,6 +46,9 @@ textFormat = (data, select) ->
         text += "\n"
     return text
 
+graphURLFormat = (service, role, graph) ->
+  return "#{HOST}/embed/orgs/pepabo/services/#{service}/#{role}.png?graph=#{graph}"
+
 module.exports = (robot) ->
   robot.respond /(mackerel|mkr)$/i, (res) ->
     unless checkToken(res)
@@ -66,4 +69,4 @@ module.exports = (robot) ->
         res.send textFormat(response, 'roles')
 
   robot.respond /(mackerel|mkr) (.+) (.+) (.+)$/i, (res) ->
-    res.send "#{HOST}/embed/orgs/pepabo/services/#{res.match[2]}/#{res.match[3]}.png?graph=#{res.match[4]}"
+    res.send graphURLFormat(res.match[2], res.match[3], res.match[4])
