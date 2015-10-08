@@ -12,8 +12,7 @@ describe 'mackerel', ->
 
     require('../src/mackerel')(@robot)
 
-  it 'registers a respond listener', ->
-    expect(@robot.respond).to.have.been.calledWith(/hello/)
-
-  it 'registers a hear listener', ->
-    expect(@robot.hear).to.have.been.calledWith(/orly/)
+  it 'hubot:mkr', ->
+    expect(@robot.hear).to.have.been.calledWith(/(mackerel|mkr)$/i)
+  it 'hubot:mackerel', ->
+    expect(@robot.hear).to.have.been.calledWith(/(mackerel|mkr)$/i)
