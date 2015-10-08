@@ -22,12 +22,11 @@ handleResponse = (msg, handler) ->
 
     switch res.statusCode
       when 404
-        response = JSON.parse(body)
-        msg.send "Failed to get mackerel api response: Not Found"
+        msg.send "Failed to get mackerel api response: Not Found", body
       when 401
-        msg.send 'Failed to get mackerel api response: Not authorized'
+        msg.send 'Failed to get mackerel api response: Not authorized', body
       when 500
-        msg.send 'Failed to get mackerel api response: Internal server error'
+        msg.send 'Failed to get mackerel api response: Internal server error', body
       when 200
         response = JSON.parse(body)
         handler response
