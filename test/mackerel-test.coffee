@@ -14,6 +14,3 @@ describe 'mackerel', ->
 
   it 'hubot:mackerel', ->
     expect(@robot.hear).to.have.been.calledWith(/mackerel$/i)
-
-  it 'hubot:mackerel service', ->
-    expect(@robot.hear).to.have.been.calledWith(/mackerel (\w+)$/i)
