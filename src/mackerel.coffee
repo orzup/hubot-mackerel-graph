@@ -34,6 +34,17 @@ handleResponse = (msg, handler) ->
       else
         msg.send "Failed to get mackerel api response: #{res.statusCode}", body
 
+textFormat = (data, select) ->
+  if data.length == 0
+    return "Failed to get mackerel api response: resnponse is empty"
+  else
+    text = ""
+    for temp, i in data[select]
+      text += "- " + temp['name']
+      if i < data[select].length - 1
+        text += "\n"
+    return text
+
 module.exports = (robot) ->
   robot.respond /(mackerel|mkr)$/i, (res) ->
     unless checkToken(res)
@@ -42,15 +53,7 @@ module.exports = (robot) ->
     res.http("https://mackerel.io/api/v0/services")
       .headers("X-Api-Key": process.env.HUBOT_MACKEREL_API_KEY)
       .get() handleResponse res, (response) ->
-        if response.length == 0
-          res.send "Failed to get mackerel api response: resnponse is empty"
-        else
-          text = ""
-          for service, i in response['services']
-            text += "- " + service['name']
-            if i < response['services'].length - 1
-              text += "\n"
-          res.send text
+        res.send textFormat(response, 'services')
 
   robot.respond /(mackerel|mkr) (\w+)$/i, (res) ->
     unless checkToken(res)
@@ -59,12 +62,4 @@ module.exports = (robot) ->
     res.http("https://mackerel.io/api/v0/services/#{res.match[2]}/roles")
       .headers("X-Api-Key": process.env.HUBOT_MACKEREL_API_KEY)
       .get() handleResponse res, (response) ->
-        if response.length == 0
-          res.send "Failed to get mackerel api response: resnponse is empty"
-        else
-          text = ""
-          for role, i in response['roles']
-            text += "- " + role['name']
-            if i < response['roles'].length - 1
-              text += "\n"
-          res.send text
+        res.send textFormat(response, 'roles')
