@@ -2,7 +2,8 @@
 #   mackerelのURLをいろいろ返してくれるbot
 #
 # Commands:
-#   hubot mackerel - サービス一覧を返す
+#   mackerel - サービス一覧を返す
+#   mkr - サービス一覧を返す
 #
 # Author:
 #   Asami Nakano <nakano.a@pepabo.com>
@@ -34,7 +35,7 @@ handleResponse = (msg, handler) ->
         msg.send "Failed to get mackerel api response: #{res.statusCode}", body
 
 module.exports = (robot) ->
-  robot.respond /mackerel$/i, (res) ->
+  robot.respond /(mackerel|mkr)$/i, (res) ->
     unless checkToken(res)
       return
 

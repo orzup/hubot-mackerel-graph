@@ -12,5 +12,7 @@ describe 'mackerel', ->
 
     require('../src/mackerel')(@robot)
 
+  it 'hubot:mkr', ->
+    expect(@robot.hear).to.have.been.calledWith(/(mackerel|mkr)$/i)
   it 'hubot:mackerel', ->
-    expect(@robot.hear).to.have.been.calledWith(/mackerel$/i)
+    expect(@robot.hear).to.have.been.calledWith(/(mackerel|mkr)$/i)
