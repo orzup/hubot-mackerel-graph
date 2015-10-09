@@ -6,11 +6,16 @@
 #   mkr - サービス一覧を返す
 #   mkr service - サービスのロール一覧を返す
 #   mkr service role - ロールのloadavg5へのURLを返す
+#   mkr service role? - グラフ一覧を返す
 #   mkr service role graph - ロールのグラフ画像へのURLを返す
 #
 # Author:
 #   Asami Nakano <nakano.a@pepabo.com>
 HOST = "https://mackerel.io"
+METRICS =
+  "loadavg5": ["loadavg5"],
+  "cpu": ["cpu.user.percentage", "cpu.iowait.percentage", "cpu.system.percentage", "cpu.idle.percentage", "cpu.nice.percentage", "cpu.irq.percentage", "cpu.softirq.percentage", "cpu.steal.percentage", "cpu.guest.percentage"],
+  "memory": ["memory.free", "memory.buffers", "memory.cached", "memory.used", "memory.total", "memory.swap_free", "memory.swap_cached"]
 
 checkToken = (msg) ->
   if process.env.HUBOT_MACKEREL_API_KEY?
@@ -50,15 +55,29 @@ textFormat = (data, select) ->
 
   text = ""
   for temp, i in data[select]
-    text += "- " + temp['name']
-    if i < data[select].length - 1
+    text += temp['name'] + " "
+  return text
+
+metricsFormat = () ->
+  text = ""
+  count = 0
+  for key, value of METRICS
+    text += "*#{key}*\n"
+    for metrics in value
+      text += metrics + " "
+    count++
+    if count < Object.keys(METRICS).length
       text += "\n"
   return text
 
 graphURLFormat = (service, role, graph) ->
   if graph == undefined
-    graph = "loadavg5"
-  return "#{HOST}/embed/orgs/#{process.env.HUBOT_MACKEREL_ORG}/services/#{service}/#{role}.png?graph=#{graph}"
+    graph = METRICS['loadavg5'][0]
+  for key, value of METRICS
+    for metrics in value
+      if graph == metrics
+        return "#{HOST}/embed/orgs/#{process.env.HUBOT_MACKEREL_ORG}/services/#{service}/#{role}.png?graph=#{graph}"
+  return "#{graph}というグラフはないようです。以下のようなグラフがあります。\n" + metricsFormat()
 
 module.exports = (robot) ->
   robot.respond /(?:mackerel|mkr)$/i, (res) ->
@@ -81,6 +100,10 @@ module.exports = (robot) ->
 
   robot.respond /(?:mackerel|mkr) (\S+) (\S+)(?: (\S+))?$/i, (res) ->
     unless checkOrg(res)
+      return
+
+    if /\?$/.test(res.match[2])
+      res.send metricsFormat()
       return
 
     res.send graphURLFormat(res.match[1], res.match[2], res.match[3])
