@@ -95,4 +95,8 @@ module.exports = (robot) ->
     unless checkOrg(res)
       return
 
+    if /\?$/.test(res.match[2])
+      res.send metricsFormat()
+      return
+
     res.send graphURLFormat(res.match[1], res.match[2], res.match[3])
