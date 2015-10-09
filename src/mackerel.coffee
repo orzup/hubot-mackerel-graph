@@ -19,6 +19,13 @@ checkToken = (msg) ->
   else
     return true
 
+checkOrg = (msg) ->
+  unless process.env.HUBOT_MACKEREL_ORG?
+    msg.send 'HUBOT_MACKEREL_ORGを設定してください'
+    return false
+  else
+    return true
+
 handleResponse = (msg, handler) ->
   (err, res, body) ->
     if err?
@@ -51,7 +58,7 @@ textFormat = (data, select) ->
 graphURLFormat = (service, role, graph) ->
   if graph == undefined
     graph = "loadavg5"
-  return "#{HOST}/embed/orgs/pepabo/services/#{service}/#{role}.png?graph=#{graph}"
+  return "#{HOST}/embed/orgs/#{process.env.HUBOT_MACKEREL_ORG}/services/#{service}/#{role}.png?graph=#{graph}"
 
 module.exports = (robot) ->
   robot.respond /(?:mackerel|mkr)$/i, (res) ->
@@ -73,4 +80,7 @@ module.exports = (robot) ->
         res.send textFormat(response, 'roles')
 
   robot.respond /(?:mackerel|mkr) (\S+) (\S+)(?: (\S+))?$/i, (res) ->
+    unless checkOrg(res)
+      return
+
     res.send graphURLFormat(res.match[1], res.match[2], res.match[3])
