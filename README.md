@@ -1,4 +1,4 @@
-# hubot-mackerel
+# hubot-mackerel-graph
 
 A hubot script that does the things
 
@@ -8,19 +8,19 @@ See [`src/mackerel.coffee`](src/mackerel.coffee) for full documentation.
 
 In hubot project repo, run:
 
-`npm install hubot-mackerel --save`
+`npm install hubot-mackerel-graph --save`
 
-Then add **hubot-mackerel** to your `external-scripts.json`:
+Then add **hubot-mackerel-graph** to your `external-scripts.json`:
 
 ```json
 [
-  "hubot-mackerel"
+  "hubot-mackerel-graph"
 ]
 ```
 
-## Sample Interaction
-
+## Configuration
+**Environmental variables**
 ```
-user1>> hubot hello
-hubot>> hello!
+HUBOT_MACKEREL_API_KEY - mackerel api key
+HUBOT_MACKEREL_ORG     - mackerel organization name
 ```
