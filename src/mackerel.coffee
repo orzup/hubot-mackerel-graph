@@ -58,13 +58,19 @@ textFormat = (data, select) ->
     text += temp['name'] + " "
   return text
 
+metricsFormat = () ->
+  text = ""
+  for metrics in METRICS
+    text += metrics + " "
+  return text
+
 graphURLFormat = (service, role, graph) ->
   if graph == undefined
     graph = METRICS[0]
   for metrics in METRICS
     if graph == metrics
       return "#{HOST}/embed/orgs/#{process.env.HUBOT_MACKEREL_ORG}/services/#{service}/#{role}.png?graph=#{graph}"
-  return "グラフの指定が正しくありません"
+  return "#{graph}というグラフはないようです。以下のようなグラフがあります。\n" + metricsFormat()
 
 module.exports = (robot) ->
   robot.respond /(?:mackerel|mkr)$/i, (res) ->
