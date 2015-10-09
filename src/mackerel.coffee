@@ -11,6 +11,11 @@
 # Author:
 #   Asami Nakano <nakano.a@pepabo.com>
 HOST = "https://mackerel.io"
+METRICS = [
+  "loadavg5",
+  "cpu.user.percentage", "cpu.iowait.percentage", "cpu.system.percentage", "cpu.idle.percentage", "cpu.nice.percentage", "cpu.irq.percentage", "cpu.softirq.percentage", "cpu.steal.percentage", "cpu.guest.percentage",
+  "memory.free", "memory.buffers", "memory.cached", "memory.used", "memory.total", "memory.swap_free", "memory.swap_cached",
+]
 
 checkToken = (msg) ->
   if process.env.HUBOT_MACKEREL_API_KEY?
@@ -55,8 +60,11 @@ textFormat = (data, select) ->
 
 graphURLFormat = (service, role, graph) ->
   if graph == undefined
-    graph = "loadavg5"
-  return "#{HOST}/embed/orgs/#{process.env.HUBOT_MACKEREL_ORG}/services/#{service}/#{role}.png?graph=#{graph}"
+    graph = METRICS[0]
+  for metrics in METRICS
+    if graph == metrics
+      return "#{HOST}/embed/orgs/#{process.env.HUBOT_MACKEREL_ORG}/services/#{service}/#{role}.png?graph=#{graph}"
+  return "グラフの指定が正しくありません"
 
 module.exports = (robot) ->
   robot.respond /(?:mackerel|mkr)$/i, (res) ->
