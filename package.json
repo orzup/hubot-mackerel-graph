@@ -1,6 +1,6 @@
 {
   "name": "hubot-mackerel-graph",
-  "description": "A hubot script that does the things",
+  "description": "Giving hubot the graph URL of your mackerel organization",
   "version": "0.0.1",
   "author": "Asami Nakano",
   "license": "MIT",
