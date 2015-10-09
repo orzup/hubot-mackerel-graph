@@ -13,18 +13,18 @@
 HOST = "https://mackerel.io"
 
 checkToken = (msg) ->
-  unless process.env.HUBOT_MACKEREL_API_KEY?
-    msg.send 'HUBOT_MACKEREL_API_KEYを設定してください'
-    return false
-  else
+  if process.env.HUBOT_MACKEREL_API_KEY?
     return true
 
+  msg.send 'HUBOT_MACKEREL_API_KEYを設定してください'
+  return false
+
 checkOrg = (msg) ->
-  unless process.env.HUBOT_MACKEREL_ORG?
-    msg.send 'HUBOT_MACKEREL_ORGを設定してください'
-    return false
-  else
+  if process.env.HUBOT_MACKEREL_ORG?
     return true
+
+  msg.send 'HUBOT_MACKEREL_ORGを設定してください'
+  return false
 
 handleResponse = (msg, handler) ->
   (err, res, body) ->
@@ -47,13 +47,13 @@ handleResponse = (msg, handler) ->
 textFormat = (data, select) ->
   if data.length == 0
     return "Failed to get mackerel api response: resnponse is empty"
-  else
-    text = ""
-    for temp, i in data[select]
-      text += "- " + temp['name']
-      if i < data[select].length - 1
-        text += "\n"
-    return text
+
+  text = ""
+  for temp, i in data[select]
+    text += "- " + temp['name']
+    if i < data[select].length - 1
+      text += "\n"
+  return text
 
 graphURLFormat = (service, role, graph) ->
   if graph == undefined
