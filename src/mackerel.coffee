@@ -5,9 +5,12 @@
 #   mackerel - サービス一覧を返す
 #   mkr - サービス一覧を返す
 #   mkr service - サービスのロール一覧を返す
+#   mkr service role - ロールのloadavg5へのURLを返す
+#   mkr service role graph - ロールのグラフ画像へのURLを返す
 #
 # Author:
 #   Asami Nakano <nakano.a@pepabo.com>
+HOST = "https://mackerel.io"
 
 checkToken = (msg) ->
   unless process.env.HUBOT_MACKEREL_API_KEY?
@@ -45,21 +48,29 @@ textFormat = (data, select) ->
         text += "\n"
     return text
 
+graphURLFormat = (service, role, graph) ->
+  if graph == undefined
+    graph = "loadavg5"
+  return "#{HOST}/embed/orgs/pepabo/services/#{service}/#{role}.png?graph=#{graph}"
+
 module.exports = (robot) ->
-  robot.respond /(mackerel|mkr)$/i, (res) ->
+  robot.respond /(?:mackerel|mkr)$/i, (res) ->
     unless checkToken(res)
       return
 
-    res.http("https://mackerel.io/api/v0/services")
+    res.http("#{HOST}/api/v0/services")
       .headers("X-Api-Key": process.env.HUBOT_MACKEREL_API_KEY)
       .get() handleResponse res, (response) ->
         res.send textFormat(response, 'services')
 
-  robot.respond /(mackerel|mkr) (\w+)$/i, (res) ->
+  robot.respond /(?:mackerel|mkr) (\S+)$/i, (res) ->
     unless checkToken(res)
       return
 
-    res.http("https://mackerel.io/api/v0/services/#{res.match[2]}/roles")
+    res.http("#{HOST}/api/v0/services/#{res.match[1]}/roles")
       .headers("X-Api-Key": process.env.HUBOT_MACKEREL_API_KEY)
       .get() handleResponse res, (response) ->
         res.send textFormat(response, 'roles')
+
+  robot.respond /(?:mackerel|mkr) (\S+) (\S+)(?: (\S+))?$/i, (res) ->
+    res.send graphURLFormat(res.match[1], res.match[2], res.match[3])
