@@ -13,11 +13,18 @@
 HOST = "https://mackerel.io"
 
 checkToken = (msg) ->
-  unless process.env.HUBOT_MACKEREL_API_KEY?
-    msg.send 'HUBOT_MACKEREL_API_KEYを設定してください'
-    return false
-  else
+  if process.env.HUBOT_MACKEREL_API_KEY?
     return true
+
+  msg.send 'HUBOT_MACKEREL_API_KEYを設定してください'
+  return false
+
+checkOrg = (msg) ->
+  if process.env.HUBOT_MACKEREL_ORG?
+    return true
+
+  msg.send 'HUBOT_MACKEREL_ORGを設定してください'
+  return false
 
 handleResponse = (msg, handler) ->
   (err, res, body) ->
@@ -40,18 +47,18 @@ handleResponse = (msg, handler) ->
 textFormat = (data, select) ->
   if data.length == 0
     return "Failed to get mackerel api response: resnponse is empty"
-  else
-    text = ""
-    for temp, i in data[select]
-      text += "- " + temp['name']
-      if i < data[select].length - 1
-        text += "\n"
-    return text
+
+  text = ""
+  for temp, i in data[select]
+    text += "- " + temp['name']
+    if i < data[select].length - 1
+      text += "\n"
+  return text
 
 graphURLFormat = (service, role, graph) ->
   if graph == undefined
     graph = "loadavg5"
-  return "#{HOST}/embed/orgs/pepabo/services/#{service}/#{role}.png?graph=#{graph}"
+  return "#{HOST}/embed/orgs/#{process.env.HUBOT_MACKEREL_ORG}/services/#{service}/#{role}.png?graph=#{graph}"
 
 module.exports = (robot) ->
   robot.respond /(?:mackerel|mkr)$/i, (res) ->
@@ -73,4 +80,7 @@ module.exports = (robot) ->
         res.send textFormat(response, 'roles')
 
   robot.respond /(?:mackerel|mkr) (\S+) (\S+)(?: (\S+))?$/i, (res) ->
+    unless checkOrg(res)
+      return
+
     res.send graphURLFormat(res.match[1], res.match[2], res.match[3])
