@@ -50,9 +50,7 @@ textFormat = (data, select) ->
 
   text = ""
   for temp, i in data[select]
-    text += "- " + temp['name']
-    if i < data[select].length - 1
-      text += "\n"
+    text += temp['name'] + " "
   return text
 
 graphURLFormat = (service, role, graph) ->
