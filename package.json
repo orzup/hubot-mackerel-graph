@@ -1,7 +1,7 @@
 {
   "name": "hubot-mackerel-graph",
   "description": "Giving hubot the graph URL of your mackerel organization",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Asami Nakano",
   "license": "MIT",
   "keywords": "mackerel",
